@@ -45,12 +45,8 @@ class NewsDbProvider implements Source, Cache {
   }
 
   Future<ItemModel> fetchItem(int id) async {
-    final maps = await db.query(
-      'Items',
-      columns: null,
-      where: 'id = ?',
-      whereArgs: [id]
-    );
+    final maps = await db
+        .query('Items', columns: null, where: 'id = ?', whereArgs: [id]);
 
     if (maps.length > 0) {
       return ItemModel.fromDb(maps.first);
@@ -60,7 +56,11 @@ class NewsDbProvider implements Source, Cache {
   }
 
   Future<int> addItem(ItemModel item) {
-    return db.insert('Items', item.toMapForDb());
+    return db.insert(
+      'Items',
+      item.toMapForDb(),
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
   }
 }
 
