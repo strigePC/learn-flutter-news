@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news/src/blocs/comments_provider.dart';
 import 'package:news/src/models/item_model.dart';
+import 'package:news/src/widgets/comment.dart';
 
 class NewsDetail extends StatelessWidget {
   NewsDetail({this.itemId});
@@ -44,11 +45,17 @@ class NewsDetail extends StatelessWidget {
   }
 
   Widget buildList(ItemModel item, Map<int, Future<ItemModel>> itemMap) {
-    return ListView(
-      children: <Widget>[
-        buildTitle(item),
-      ],
-    );
+    final children = <Widget>[];
+    children.add(buildTitle(item));
+    final commentsList = item.kids.map((kidId) {
+      return Comment(
+        itemId: kidId,
+        itemMap: itemMap,
+        depth: 0,
+      );
+    });
+    children.addAll(commentsList);
+    return ListView(children: children);
   }
 
   Widget buildTitle(ItemModel item) {
@@ -58,10 +65,7 @@ class NewsDetail extends StatelessWidget {
       child: Text(
         item.title,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold
-        ),
+        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       ),
     );
   }
